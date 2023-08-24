@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Presentation Manager</title>
+</head>
+<body>
+    <h1>Presentation Manager</h1>
+    
+    <h2>Add Presentation</h2>
+    <form id="addForm">
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="description" placeholder="Description">
+        <input type="text" id="topic" placeholder="Topic">
+        <input type="text" id="completed" placeholder="Completed">
+        <input type="date" id="date" placeholder="Date">
+        <button type="submit">Add Presentation</button>
+    </form>
+    
+    <h2>Presentations</h2>
+    <table id="presentationTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Topic</th>
+                <th>Completed</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="presentationList"></tbody>
+    </table>
+
+    <footer>
+        <hr />
+        <br />
+        Website made with ❣️ by <a href="https://github.com/harshit-sharma-gits" target="_blank">Harshit Sharma</a>
+    </footer>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
