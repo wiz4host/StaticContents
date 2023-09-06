@@ -1,0 +1,65 @@
+#!/bin/bash
+
+apt install nginx
+
+# Step 1: User Input
+read -p "Enter the web app name: " app_name
+read -p "Enter the desired port: " port
+read -p "Enter the proxy pass URL (e.g., http://localhost:5000): " proxy_pass_url
+read -p "Enter 'yes' if you want to use SSL, or 'no' otherwise: " use_ssl
+if [[ "$use_ssl" == "yes" ]]; then
+    read -p "Enter the SSL port: " ssl_port
+fi
+
+# Step 2: Create Directory and Configuration
+WEBAPPCONFPATH="/etc/nginx/sites-enabled/${app_name}.conf"
+app_dir="/var/www/${app_name}"
+app_conf="/etc/nginx/sites-enabled/${app_name}.conf"
+
+mkdir -p "$app_dir"/{html,logs}
+touch "$app_conf"
+
+# Step 3: Web App Files
+cp "$homepage_src" "${app_dir}/index.html"
+
+# Step 4: Configure Virtual Host
+cat > "$app_conf" <<EOF
+server {
+    listen ${port};
+    server_name ${app_name}.localhost;
+    location / {
+        root ${app_dir};
+         try_files $uri $uri/ =404;;
+    }
+EOF
+
+# Conditionally add proxy_pass location block if proxy_pass_url is provided
+if [[ -n "$proxy_pass_url" ]]; then
+    echo "    location /api/ {
+        proxy_pass ${proxy_pass_url};
+    }" >> "$app_conf"
+fi
+
+# Conditionally add SSL configuration if use_ssl is set to 'yes'
+if [[ "$use_ssl" == "yes" ]]; then
+    echo "    listen ${ssl_port} ssl;
+    ssl_certificate /etc/nginx/ssl/${app_name}_cert.crt;
+    ssl_certificate_key /etc/nginx/ssl/${app_name}_key.key;" >> "$app_conf"
+fi
+
+echo "}" >> "$app_conf"
+
+# Step 5: Self-Signed SSL Certificate (only if use_ssl is set to 'yes')
+if [[ "$use_ssl" == "yes" ]]; then
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout "/etc/nginx/ssl/${app_name}_key.key" \
+        -out "/etc/nginx/ssl/${app_name}_cert.crt" \
+        -subj "/CN=${app_name}.localhost"
+fi
+
+# Step 6: Start the Web Server
+service nginx start
+nginx -t
+nginx -s reload
+nginx -t
+echo "Web app '${app_name}' is now hosted on port ${port}."
