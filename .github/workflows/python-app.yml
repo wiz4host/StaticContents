@@ -29,6 +29,7 @@ jobs:
     - name: read secrets
       run: |
         printenv | grep 'VSPHERE_PWD'
+        python scripts/secrets_env.py
       env:
         VSPHERE_PWD: "FROM SECRET"
         VSPHERE_PWD_FRM_SECRET01: "${{ secrets.VSPHERE_PWD01 }}"
