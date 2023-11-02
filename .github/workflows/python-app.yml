@@ -28,9 +28,10 @@ jobs:
     
     - name: read secrets
       run: |
-        printenv
+        printenv | grep 'VSPHERE_PWD'
       env:
-        VSPAHERE_PWD: "FROM SECRET"
+        VSPHERE_PWD: "FROM SECRET"
+        VSPHERE_PWD_FRM_SECRET: "${{ secrets.VSPHERE_PWD }}"
     
     - name: Install dependencies
       run: |
