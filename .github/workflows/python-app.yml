@@ -40,7 +40,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: secrets.tfvars.json
-        path: ./
+        path: ./secrets.tfvars.json
     
     - name: Install dependencies
       run: |
