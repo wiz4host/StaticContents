@@ -29,12 +29,18 @@ jobs:
     - name: read secrets
       run: |
         printenv | grep 'VSPHERE_PWD'
-        python scripts/secrets_env.py
+        python scripts/secrets_env.py > secrets.tfvars.json
       env:
         VSPHERE_PWD: "FROM SECRET"
         VSPHERE_PWD_FRM_SECRET01: "${{ secrets.VSPHERE_PWD01 }}"
         VSPHERE_PWD_FRM_SECRET02: "${{ secrets.VSPHERE_PWD02 }}"
         VSPHERE_PWD_FRM_SECRET03: "${{ secrets.VSPHERE_PWD03 }}"
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v2
+      with:
+        name: secrets.tfvars.json
+        path: ./
     
     - name: Install dependencies
       run: |
